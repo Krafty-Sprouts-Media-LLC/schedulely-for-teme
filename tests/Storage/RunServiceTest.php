@@ -18,69 +18,10 @@ use KraftySprouts\Schedulely\Storage\QueueStore;
 use KraftySprouts\Schedulely\Storage\ReorderLogStore;
 use KraftySprouts\Schedulely\Storage\SlotStore;
 use KraftySprouts\Schedulely\Storage\StateStore;
-use KraftySprouts\Schedulely\Tests\Support\ArraySettings;
 use KraftySprouts\Schedulely\Tests\Support\FakeHttp;
-use KraftySprouts\Schedulely\Tests\Support\TestDatabase;
-use Random\Engine\Mt19937;
-use Random\Randomizer;
-use Teme\Contracts\Content\ContentWriter;
-use Teme\Contracts\Content\ItemChanges;
-use Teme\Contracts\Content\ItemRef;
-use Teme\Contracts\Content\NewItem;
-use Teme\Contracts\Content\WriteRefused;
+use KraftySprouts\Schedulely\Tests\Support\FakeWriter;
+use KraftySprouts\Schedulely\Tests\Support\Harness;
 use Teme\Contracts\Http\HttpAnswer;
-use Teme\Contracts\Settings\SecretReader;
-
-/** A ContentWriter that remembers schedule() calls and refuses chosen items. */
-final class FakeWriter implements ContentWriter
-{
-    /** @var list<array{id: string, at: int, person: string}> */
-    public array $scheduled = [];
-
-    /** @param list<string> $refuse */
-    public function __construct(public array $refuse = []) {}
-
-    public function create(NewItem $item, string $actingPersonId): ItemRef
-    {
-        throw new LogicException('not used');
-    }
-
-    public function change(ItemRef $item, ItemChanges $changes, string $actingPersonId): ItemRef
-    {
-        throw new LogicException('not used');
-    }
-
-    public function publish(ItemRef $item, string $actingPersonId): ItemRef
-    {
-        throw new LogicException('not used');
-    }
-
-    public function schedule(ItemRef $item, DateTimeImmutable $at, string $actingPersonId): ItemRef
-    {
-        if (in_array($item->id, $this->refuse, true)) {
-            throw new WriteRefused('The item is locked.');
-        }
-
-        $this->scheduled[] = ['id' => $item->id, 'at' => $at->getTimestamp(), 'person' => $actingPersonId];
-
-        return new ItemRef($item->id, $item->type, $item->title, 'scheduled', null, $item->language);
-    }
-}
-
-final class FixedSecret implements SecretReader
-{
-    public function __construct(private ?string $value) {}
-
-    public function secret(string $group, string $key): ?string
-    {
-        return $group === 'plugin.schedulely' && $key === 'ai_api_key' ? $this->value : null;
-    }
-}
-
-function runNow(): int
-{
-    return (new DateTimeImmutable('2026-11-15 08:00', new DateTimeZone('UTC')))->getTimestamp();
-}
 
 /**
  * @param  array<string, mixed>  $settings
@@ -88,26 +29,9 @@ function runNow(): int
  */
 function runFixture(array $settings = [], int $queued = 5, ?string $key = null, ?HttpAnswer $reply = null): array
 {
-    $db = TestDatabase::fresh();
-    $queue = new QueueStore($db);
+    $h = Harness::make($settings, $queued, $key, $reply);
 
-    for ($i = 1; $i <= $queued; $i++) {
-        $queue->put(new QueueItem(sprintf('item%02d', $i), 'post', "Draft number {$i}", 'en', 'draft', $i));
-    }
-
-    $writer = new FakeWriter;
-    $http = new FakeHttp($reply ?? FakeHttp::chat('{"ordered_ids":[5,4,3,2,1]}'));
-    $values = ['plugin.schedulely' => $settings + [
-        'posts_per_day' => 2, 'scheduling_mode' => 'sequential', 'start_time' => '9:00 AM', 'end_time' => '5:00 PM',
-        'acting_account' => 'acting-1', 'shuffle_queue' => false,
-    ], 'general' => ['timezone' => 'UTC']];
-
-    $service = new RunService(
-        new ArraySettings($values), new FixedSecret($key), $writer, $http, $db,
-        static fn (): int => runNow(), new Randomizer(new Mt19937(8)),
-    );
-
-    return [$service, $writer, $db, $http];
+    return [$h->service, $h->writer, $h->db, $h->http];
 }
 
 it('schedules the queue, oldest first, a day at a time, as the configured account', function (): void {
@@ -129,7 +53,7 @@ it('remembers the run for the status screen', function (): void {
     $service->run(manual: true);
     $state = new StateStore($db);
 
-    expect($state->get('last_run'))->toBe(runNow())
+    expect($state->get('last_run'))->toBe(Harness::start())
         ->and($state->get('last_report')['scheduled'])->toBe(5)
         ->and($state->get('last_report')['windows'])->toBe(['2026-11-15', '2026-11-16', '2026-11-17']);
 });

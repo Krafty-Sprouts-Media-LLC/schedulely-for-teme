@@ -31,15 +31,17 @@ final readonly class RunOutcome
         public int $notLoaded = 0,
         public int $eligibleRemaining = 0,
         public string $orderedBy = '',
+        public bool $quiet = false,
     ) {}
 
     /**
-     * A run that did not start, and the sentence saying why.
+     * A run that did not start, and the sentence saying why. A quiet skip is expected
+     * (automatic scheduling is off, or no run is due) and is not worth telling anyone.
      *
      * @since 0.1.0
      */
-    public static function skipped(string $reason): self
+    public static function skipped(string $reason, bool $quiet = false): self
     {
-        return new self(false, $reason, new RunReport(false, 0, 0, 0, false, $reason));
+        return new self(false, $reason, new RunReport(false, 0, 0, 0, false, $reason), quiet: $quiet);
     }
 }
