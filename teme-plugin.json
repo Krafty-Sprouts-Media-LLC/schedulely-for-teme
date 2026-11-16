@@ -3,17 +3,277 @@
     "name": "krafty-sprouts/schedulely",
     "code": "schedulely",
     "label": "Schedulely",
-    "description": "Spreads queued drafts across future publishing windows, with quotas, minimum intervals, weekdays and optional queue ordering.",
+    "description": "Spreads queued drafts across future publishing windows, with daily quotas, minimum intervals, active weekdays and optional queue ordering. Sends a series' titles, never article text, to the AI service you pick, and only if you turn AI ordering on.",
     "version": "0.1.0",
     "requires": {
         "teme": "^0.8 || ^0.9"
     },
     "plugin": "KraftySprouts\\Schedulely\\SchedulelyPlugin",
     "author": "Krafty Sprouts Media, LLC",
+    "homepage": "https://kraftysprouts.com",
     "license": "GPL-2.0-or-later",
-    "capabilities": ["content.read", "content.write", "jobs"],
+    "capabilities": ["content.read", "content.write", "jobs", "http"],
+    "hosts": ["api.deepseek.com", "api.openai.com", "openrouter.ai"],
+    "hooks": [
+        "ContentSaved",
+        "ContentScheduled",
+        "ContentPublished",
+        "ContentUnpublished",
+        "ContentTrashed",
+        "ContentRestored",
+        "ContentDeleted",
+        "SettingsChanged"
+    ],
+    "jobs": [
+        { "key": "run", "label": "Schedule the queued items", "long": true, "tries": 2, "backoff": [60] },
+        { "key": "auto-run", "label": "Schedule the queued items automatically", "long": true, "tries": 1 }
+    ],
+    "schedules": [
+        { "job": "auto-run", "every": "hour" }
+    ],
     "owns": {
         "tables": ["schedulely_queue", "schedulely_slots", "schedulely_state", "schedulely_reorder_log"]
     },
-    "hooks": ["ContentSaved"]
+    "contributes": {
+        "admin": [
+            {
+                "surface": "tools",
+                "id": "schedulely",
+                "label": "Schedulely",
+                "description": "Spread queued drafts across publishing windows.",
+                "icon": "send",
+                "to": "settings"
+            }
+        ],
+        "settings": [
+            {
+                "key": "post_status",
+                "type": "select",
+                "label": "Status to schedule from",
+                "description": "Items in this status are the queue. Draft or In review.",
+                "default": "draft",
+                "options": { "draft": "Draft", "review": "In review" }
+            },
+            {
+                "key": "post_types",
+                "type": "text",
+                "label": "Content types to schedule",
+                "description": "Content type keys, separated by commas, such as post or post, page. Only items of these types join the queue.",
+                "default": "post",
+                "maxLength": 200,
+                "example": "post, page"
+            },
+            {
+                "key": "posts_per_day",
+                "type": "number",
+                "label": "Posts per day",
+                "description": "How many items go live in each publishing window.",
+                "default": 8,
+                "min": 1,
+                "max": 100
+            },
+            {
+                "key": "pool_size",
+                "type": "number",
+                "label": "Pool size (most per run)",
+                "description": "The most queued items one run loads, oldest first. A larger pool gives shuffling and ordering more to work with.",
+                "default": 1500,
+                "min": 1,
+                "max": 10000
+            },
+            {
+                "key": "batch_size",
+                "type": "number",
+                "label": "Progress batch size",
+                "description": "How many items a run schedules between progress updates on the Jobs screen.",
+                "default": 75,
+                "min": 10,
+                "max": 500
+            },
+            {
+                "key": "start_time",
+                "type": "text",
+                "label": "Window opens",
+                "description": "The time of day posts may start going live, in the site's timezone. 5:00 PM or 17:00.",
+                "default": "5:00 PM",
+                "maxLength": 12,
+                "example": "5:00 PM"
+            },
+            {
+                "key": "end_time",
+                "type": "text",
+                "label": "Window closes",
+                "description": "The time of day it ends. Set it earlier than the opening time for an overnight window, such as 10 PM to 2 AM.",
+                "default": "11:00 PM",
+                "maxLength": 12,
+                "example": "11:00 PM"
+            },
+            {
+                "key": "min_interval",
+                "type": "number",
+                "label": "Minimum interval",
+                "description": "The least gap between two posts in Random mode.",
+                "default": 40,
+                "min": 1,
+                "max": 1440,
+                "unit": "minutes"
+            },
+            {
+                "key": "active_days",
+                "type": "multiselect",
+                "label": "Active days",
+                "description": "Posts are only scheduled on these weekdays.",
+                "default": ["0", "1", "2", "3", "4", "5", "6"],
+                "options": {
+                    "1": "Monday",
+                    "2": "Tuesday",
+                    "3": "Wednesday",
+                    "4": "Thursday",
+                    "5": "Friday",
+                    "6": "Saturday",
+                    "0": "Sunday"
+                }
+            },
+            {
+                "key": "scheduling_mode",
+                "type": "select",
+                "label": "Scheduling mode",
+                "description": "Random looks most natural but can fall short of the quota. Sequential spaces posts perfectly evenly and always meets it. Hybrid splits the window into equal slots and places each post at a random time inside its slot.",
+                "default": "random",
+                "options": { "random": "Random (about 70% efficient)", "sequential": "Sequential (100%)", "hybrid": "Hybrid (about 95%)" }
+            },
+            {
+                "key": "safety_buffer",
+                "type": "number",
+                "label": "Safety buffer",
+                "description": "Nothing is scheduled sooner than this from now.",
+                "default": 30,
+                "min": 0,
+                "max": 1440,
+                "unit": "minutes"
+            },
+            {
+                "key": "reorder_queue",
+                "type": "boolean",
+                "label": "Reorder the queue before scheduling",
+                "description": "Spaces related items apart instead of letting a series cluster. Runs only when you start a run yourself, never on the automatic schedule. When off, items keep oldest-first order, or the shuffle below.",
+                "default": false
+            },
+            {
+                "key": "ordering_method",
+                "type": "select",
+                "label": "Ordering method",
+                "description": "PHP ordering is instant, free and needs no service: it groups items by title with the US state removed and spreads each series. AI ordering asks the service below and falls back to PHP if it fails.",
+                "default": "php",
+                "options": { "php": "PHP ordering (recommended)", "ai": "AI ordering" }
+            },
+            {
+                "key": "php_spread",
+                "type": "select",
+                "label": "PHP spacing strategy",
+                "description": "Even distribution spreads each series across the whole queue. Round-robin takes one item per series per pass, and the biggest series can bunch up at the end.",
+                "default": "even",
+                "options": { "even": "Even distribution (recommended)", "round_robin": "Round-robin" }
+            },
+            {
+                "key": "timezone_ordering",
+                "type": "boolean",
+                "label": "US timezone-aware ordering",
+                "description": "Publishes each item during its US state's waking hours (7 AM to 11 PM local), found from the title. Needs Random mode.",
+                "default": false
+            },
+            {
+                "key": "shuffle_queue",
+                "type": "boolean",
+                "label": "Shuffle before assigning dates",
+                "description": "Used when reordering is off, and on every automatic run. Randomises which queued items get the next slots instead of oldest-first.",
+                "default": true
+            },
+            {
+                "key": "ai_provider",
+                "type": "select",
+                "label": "AI service",
+                "description": "Which service AI ordering calls. Only a title-based slug and a number are sent for each item, never article text.",
+                "default": "deepseek",
+                "options": { "deepseek": "DeepSeek", "openai": "OpenAI", "openrouter": "OpenRouter" }
+            },
+            {
+                "key": "ai_model",
+                "type": "text",
+                "label": "AI model",
+                "description": "The model to ask. Use a fast one that is not a reasoning model.",
+                "default": "deepseek-v4-flash",
+                "maxLength": 120,
+                "example": "deepseek-v4-flash"
+            },
+            {
+                "key": "ai_api_key",
+                "type": "secret",
+                "label": "AI service key",
+                "description": "The service's API key. Stored encrypted, never shown again. Leave empty to keep the saved one."
+            },
+            {
+                "key": "ai_max_items",
+                "type": "number",
+                "label": "Most items per AI request",
+                "description": "Teme allows a plugin ten seconds per request, so a bigger queue is ordered with PHP instead.",
+                "default": 150,
+                "min": 1,
+                "max": 1000
+            },
+            {
+                "key": "randomize_authors",
+                "type": "boolean",
+                "label": "Rotate the acting person",
+                "description": "Each write is made for a random one of the accounts below. Teme does not say whether that changes an item's author.",
+                "default": false
+            },
+            {
+                "key": "author_accounts",
+                "type": "textarea",
+                "label": "Accounts to rotate",
+                "description": "Account IDs, separated by commas or lines.",
+                "default": "",
+                "maxLength": 2000
+            },
+            {
+                "key": "excluded_accounts",
+                "type": "textarea",
+                "label": "Accounts never used",
+                "description": "Account IDs left out of the rotation.",
+                "default": "",
+                "maxLength": 2000
+            },
+            {
+                "key": "acting_account",
+                "type": "text",
+                "label": "Account to act as",
+                "description": "The account ID Schedulely schedules for on the automatic schedule, and the fallback when no rotation is set. Required for automatic runs.",
+                "default": "",
+                "maxLength": 64
+            },
+            {
+                "key": "auto_schedule",
+                "type": "boolean",
+                "label": "Schedule automatically",
+                "description": "Runs on its own, on the interval below. Off until you turn it on.",
+                "default": false
+            },
+            {
+                "key": "auto_interval",
+                "type": "select",
+                "label": "Automatic run interval",
+                "description": "How often an automatic run happens.",
+                "default": "12",
+                "options": { "1": "Every hour", "6": "Every 6 hours", "12": "Every 12 hours", "24": "Every day" }
+            },
+            {
+                "key": "run_now",
+                "type": "boolean",
+                "label": "Run now",
+                "description": "Turn this on and save to start a run at once. To run again, turn it off, save, then on and save.",
+                "default": false
+            }
+        ]
+    }
 }
