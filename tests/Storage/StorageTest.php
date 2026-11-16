@@ -11,30 +11,18 @@
 
 declare(strict_types=1);
 
-use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Database\ConnectionInterface;
-use Illuminate\Support\Facades\Facade;
 use KraftySprouts\Schedulely\Ordering\ReorderLogEntry;
 use KraftySprouts\Schedulely\Queue\QueueItem;
 use KraftySprouts\Schedulely\Storage\QueueStore;
 use KraftySprouts\Schedulely\Storage\ReorderLogStore;
 use KraftySprouts\Schedulely\Storage\SlotStore;
 use KraftySprouts\Schedulely\Storage\StateStore;
+use KraftySprouts\Schedulely\Tests\Support\TestDatabase;
 
 function freshDatabase(): ConnectionInterface
 {
-    $capsule = new Capsule;
-    $capsule->addConnection(['driver' => 'sqlite', 'database' => ':memory:', 'prefix' => '']);
-    $container = $capsule->getContainer();
-    $container->instance('db', $capsule->getDatabaseManager());
-    $container->instance('db.schema', $capsule->getConnection()->getSchemaBuilder());
-    Facade::clearResolvedInstances();
-    Facade::setFacadeApplication($container);
-
-    $migration = require dirname(__DIR__, 2).'/database/migrations/2026_11_16_000001_create_schedulely_tables.php';
-    $migration->up();
-
-    return $capsule->getConnection();
+    return TestDatabase::fresh();
 }
 
 function qItem(string $id, string $title = 'T', string $type = 'post', string $status = 'draft', int $seen = 100): QueueItem
