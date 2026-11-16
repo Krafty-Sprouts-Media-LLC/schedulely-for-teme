@@ -83,3 +83,7 @@ added at the end.
 ### W10. A schedule cannot be switched off or retimed by a setting
 - **Expected**: WordPress has an Auto-schedule toggle that adds or removes the cron event and a fixed `twicedaily` interval.
 - **Did instead**: the manifest declares an hourly schedule once; the handler reads `auto_schedule` and `auto_interval` and returns early.
+
+### W11. A plugin's HTTP call is limited to 10 seconds and 1 MB
+- **Expected**: WordPress waits up to an hour for the AI to order a queue of up to 1,500 posts (a reorder of a few hundred takes minutes on a reasoning-capable model).
+- **Did instead**: AI ordering sends at most 150 items in one request (a setting), numbered `1…n` with a slug each instead of ULIDs to keep the prompt short, and a larger queue is ordered in PHP with a log row saying why. Chunking the queue would lose the global spacing, so it is not done. `OutboundHttp::postJson()` also gives no way to ask for a longer wait, so a slow model can still time out; the fallback to PHP ordering covers that.
