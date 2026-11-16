@@ -20,7 +20,7 @@ use Teme\Contracts\Jobs\Jobs;
  *
  * @since 0.1.0
  */
-final class FakeJobs implements Jobs
+class FakeJobs implements Jobs
 {
     /** @var list<array{key: string, payload: array<string, mixed>, label: string|null}> */
     public array $queued = [];

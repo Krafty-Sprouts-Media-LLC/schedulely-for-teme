@@ -121,3 +121,12 @@ added at the end.
 
 ### H15. `php artisan teme:plugins:enable` re-reads the manifest every time
 - **Found** while iterating: after each change to `teme-plugin.json` the plugin shows `Needs attention` or `Can't be used` until it is enabled again, and the `Why` column is the only place that says why (it names the missing import in a constructor, for one). That column is good; the Testing page could say to read it.
+
+### H16. `Jobs::queue()` refuses unless a person or "the operator" is acting
+- **Expected**: the Jobs contract says "Queues one of the calling plugin's declared jobs"; the stub Jobs page says nothing more.
+- **Found** (second attempt to get live content onto the dev site, after the owner agreed to a throwaway account and a seeder plugin): calling `queue()` from `register()` threw `InvalidArgumentException: Only a person or the operator queues a plugin job.` in the console, including inside `php artisan teme:plugins:run-due-schedules`. The error is in the site's log only; the plugin still showed as Enabled. This is consistent with Schedulely's design (a "Run now" saved by a person queues; a hook with no person could not), but it means a plugin cannot queue its own work from a hook caused by anything automatic, and the docblock does not say so. It also means `RunNowTrigger` runs as nobody when `SettingsChanged::$actorId` is null, and would be refused.
+
+### H17. A plugin schedule never came due on the dev site, and nothing says why
+- **Expected**: a `schedules` entry of `every: minute` queues its job about once a minute while the scheduler runs.
+- **Found**: three and a half minutes of polling `teme:plugins:run-due-schedules` (and one `schedule:run`) answered "No plugin schedules were due." for two plugins, one of them re-enabled a minute earlier. `teme:doctor` says the scheduler role has never run on this site, which may be the whole reason; the docs do not say what makes a schedule due, whether the first run waits a full period, or whether `run-due-schedules` can be used by hand to test one.
+- **Effect on this port**: the hourly `auto-run` job was never seen firing, and a throwaway seeder plugin that was meant to put drafts on the site (through `ContentWriter::create`) could not be started by either route. **No live scheduled item was produced.** The seeder, its `.env` path and the temporary manifest defaults were removed; the throwaway account `schedulely-dev@example.invalid` (an editor, user ID 3) still exists on the dev site, with its unused set-password link, for the owner to delete in the admin.

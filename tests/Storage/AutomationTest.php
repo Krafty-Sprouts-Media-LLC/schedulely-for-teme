@@ -101,6 +101,19 @@ it('does not queue a run for another setting, or another plugin\'s group', funct
         ->and($jobs->queued)->toBe([]);
 });
 
+it('does not blow up when Teme refuses to queue the job', function (): void {
+    $h = Harness::make(['run_now' => true]);
+    $jobs = new class extends FakeJobs
+    {
+        public function queue(string $key, array $payload = [], ?string $label = null): string
+        {
+            throw new InvalidArgumentException('Only a person or the operator queues a plugin job.');
+        }
+    };
+
+    expect((new RunNowTrigger($h->settings, $jobs))->settingsChanged(new SettingsChanged('plugin.schedulely', ['run_now'], null)))->toBeNull();
+});
+
 it('runs as nobody when no person saved the setting', function (): void {
     $h = Harness::make(['run_now' => true]);
     $jobs = new FakeJobs;

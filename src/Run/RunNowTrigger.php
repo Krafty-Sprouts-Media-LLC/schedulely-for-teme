@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace KraftySprouts\Schedulely\Run;
 
+use InvalidArgumentException;
 use KraftySprouts\Schedulely\Settings\Defaults;
 use KraftySprouts\Schedulely\Settings\Options;
 use KraftySprouts\Schedulely\Support\Words;
@@ -58,6 +59,12 @@ final readonly class RunNowTrigger
             return null;
         }
 
-        return $this->jobs->queue('run', ['actor' => (string) ($event->actorId ?? '')], Words::say('Schedule the queued items'));
+        try {
+            return $this->jobs->queue('run', ['actor' => (string) ($event->actorId ?? '')], Words::say('Schedule the queued items'));
+        } catch (InvalidArgumentException) {
+            // Teme queues a plugin's job only for a person or the operator; a save with
+            // no person behind it (a script, an import) is refused, and that is not an error here.
+            return null;
+        }
     }
 }

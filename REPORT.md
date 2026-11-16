@@ -12,9 +12,9 @@ The scheduling engine, both orderings, capacity maths, settings, storage, automa
 
 | | Result |
 |---|---|
-| Pest, all suites | **227 passed, 0 failed, 1082 assertions** |
+| Pest, all suites | **228 passed, 0 failed, 1083 assertions** |
 | `Unit` (pure logic: time, window, capacity, slots, scheduler, ordering, AI ordering, options) | 158 tests, 904 assertions |
-| `Storage` (SQLite through the real migration: stores, hook tracker, run service, automation, status notices) | 69 tests, 178 assertions |
+| `Storage` (SQLite through the real migration: stores, hook tracker, run service, automation, status notices) | 70 tests, 179 assertions |
 | Pint (Teme's rules, minus two that fight the file header) | passes |
 | PHPStan level 6 | no errors |
 | `bin/smoke.ps1` on the dev site | passes: enable, migrate, four tables, `teme:doctor` with 0 errors |
@@ -53,6 +53,10 @@ Each is a wall in FINDINGS.md (W1 to W12) with what was expected and what was do
 | W7, W11: no AI contract, 10 second call limit | AI ordering is capped at 150 items per request; bigger queues use PHP ordering. |
 | W8: no plugin-defined hooks, no way to extend the API or agent tools | The five WordPress Abilities exist only as tested classes. |
 | W9, W10: a scheduled job has no acting person; schedules are fixed in the manifest | `acting_account` setting; an hourly schedule with the interval decided in code. |
+
+## A second attempt at live content (after the first report)
+
+With the owner's go-ahead I made a throwaway editor account (`schedulely-dev@example.invalid`, user ID 3; the set-password link was withheld and never used) and a temporary seeder plugin that creates six drafts through `ContentWriter::create`, to push them through Schedulely for real. It could not be started: plugin schedules never came due (FINDINGS H17) and `Jobs::queue()` refuses without a signed-in person or the operator (H16). Nothing was created. The seeder, its `.env` path, its marker file and the temporary manifest edits were removed, and the shipped manifest is unchanged. **The account still exists on teme-dev; delete it in the admin if you do not want it.** A stale "schedulely-seeder" row also shows as Disabled in `teme:plugins` because the console has no command that forgets a plugin whose folder is gone. The one code change that came out of it: the "Run now" trigger now ignores a refused `queue()` instead of throwing (test added). The only way left is to sign in to the admin, save a few drafts and use "Run now" (steps below).
 
 ## Not verified on a live site
 
