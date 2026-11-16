@@ -6,6 +6,7 @@
  *              Teme's content hooks say happened to each item.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

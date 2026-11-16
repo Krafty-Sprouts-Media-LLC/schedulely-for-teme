@@ -5,6 +5,7 @@
  * Description: The "auto-run" job Teme's hourly schedule queues.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

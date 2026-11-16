@@ -7,6 +7,7 @@
  *              OutboundHttp stands in for the network, and the key is a dummy.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

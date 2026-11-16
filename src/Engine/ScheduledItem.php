@@ -5,6 +5,7 @@
  * Description: One item a run scheduled.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

@@ -5,6 +5,7 @@
  * Description: The answer to "does this window hold this many posts a day?".
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

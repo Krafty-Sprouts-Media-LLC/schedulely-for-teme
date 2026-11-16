@@ -6,6 +6,7 @@
  *              timestamp, calendar days that survive daylight saving, weekdays.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

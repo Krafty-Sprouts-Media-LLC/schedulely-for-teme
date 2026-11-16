@@ -5,6 +5,7 @@
  * Description: The rolling log of queue-ordering attempts.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

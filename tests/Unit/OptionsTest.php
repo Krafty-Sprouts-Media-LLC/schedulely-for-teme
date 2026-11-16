@@ -6,6 +6,7 @@
  *              defaults, clamping, and the text lists that stand in for pickers.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

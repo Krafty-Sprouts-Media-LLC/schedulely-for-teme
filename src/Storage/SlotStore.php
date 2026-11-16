@@ -5,6 +5,7 @@
  * Description: The ledger of scheduled publish times, kept from the hooks that tell of them.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

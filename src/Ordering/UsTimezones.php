@@ -6,6 +6,7 @@
  *              the part of the publishing window that lies in that zone's waking hours.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 
@@ -110,6 +111,7 @@ final class UsTimezones
      *
      * @param  array<string, string>  $groupById  item ID to group
      * @param  list<string>  $ids  the items the run scheduled
+     *
      * @return array{eastern: int, central: int, mountain: int, pacific: int, general: int}
      *
      * @since 0.1.0

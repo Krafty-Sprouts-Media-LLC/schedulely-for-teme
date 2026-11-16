@@ -6,6 +6,7 @@
  *              scheduling is on and the chosen interval has passed.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

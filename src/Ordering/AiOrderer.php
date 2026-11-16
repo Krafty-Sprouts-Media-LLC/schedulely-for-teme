@@ -6,6 +6,7 @@
  *              series are spread apart, and repairs or rejects its answer.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 
@@ -104,6 +105,7 @@ final readonly class AiOrderer
 
     /**
      * @param  list<QueueItem>  $items
+     *
      * @return array<string, mixed>
      */
     private function body(array $items): array
@@ -219,6 +221,7 @@ final readonly class AiOrderer
      * appends any left out in input order.
      *
      * @param  list<int>  $parsed
+     *
      * @return array{0: list<int>, 1: bool} the repaired order, and whether the answer needed no repair
      */
     private function reconcile(int $count, array $parsed): array

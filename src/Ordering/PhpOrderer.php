@@ -6,6 +6,7 @@
  *              spaced apart instead of landing back to back.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 
@@ -29,6 +30,7 @@ final readonly class PhpOrderer
 
     /**
      * @param  list<QueueItem>  $items
+     *
      * @return list<QueueItem> the same items in publishing order
      *
      * @since 0.1.0
@@ -71,6 +73,7 @@ final readonly class PhpOrderer
 
     /**
      * @param  list<QueueItem>  $items
+     *
      * @return array<string, list<QueueItem>> stem to members, largest group first
      */
     private function group(array $items): array
@@ -92,6 +95,7 @@ final readonly class PhpOrderer
      * it keeps every series evenly spaced from the first publish day to the last.
      *
      * @param  array<string, list<QueueItem>>  $groups
+     *
      * @return list<QueueItem>
      */
     private function even(array $groups): array
@@ -113,6 +117,7 @@ final readonly class PhpOrderer
 
     /**
      * @param  array<string, list<QueueItem>>  $groups
+     *
      * @return list<QueueItem>
      */
     private function roundRobin(array $groups): array

@@ -5,6 +5,7 @@
  * Description: Pest configuration for Schedulely's own tests.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

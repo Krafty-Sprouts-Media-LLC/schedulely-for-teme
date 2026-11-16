@@ -7,6 +7,7 @@
  *              not fit. The numbers are those the WordPress plugin produces.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

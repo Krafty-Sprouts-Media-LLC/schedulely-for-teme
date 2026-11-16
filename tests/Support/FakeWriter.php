@@ -5,6 +5,7 @@
  * Description: A ContentWriter that remembers schedule() calls and refuses chosen items.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

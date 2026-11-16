@@ -6,6 +6,7 @@
  *              text people type into the window settings.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

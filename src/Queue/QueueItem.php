@@ -5,6 +5,7 @@
  * Description: One item waiting in Schedulely's queue.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

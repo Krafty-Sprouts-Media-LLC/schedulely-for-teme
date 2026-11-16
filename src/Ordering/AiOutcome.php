@@ -5,6 +5,7 @@
  * Description: What one AI ordering attempt came to, for the scheduler and the log.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

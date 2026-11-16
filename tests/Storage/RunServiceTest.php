@@ -6,6 +6,7 @@
  *              ordering, the engine, a fake ContentWriter, and the recorded outcome.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 
@@ -25,6 +26,7 @@ use Teme\Contracts\Http\HttpAnswer;
 
 /**
  * @param  array<string, mixed>  $settings
+ *
  * @return array{0: RunService, 1: FakeWriter, 2: ConnectionInterface, 3: FakeHttp}
  */
 function runFixture(array $settings = [], int $queued = 5, ?string $key = null, ?HttpAnswer $reply = null): array

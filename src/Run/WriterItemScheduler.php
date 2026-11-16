@@ -6,6 +6,7 @@
  *              own tables in step.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

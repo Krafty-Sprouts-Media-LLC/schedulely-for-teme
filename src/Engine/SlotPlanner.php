@@ -6,6 +6,7 @@
  *              slots for Sequential and Hybrid, trial and error for Random.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

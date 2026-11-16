@@ -5,6 +5,7 @@
  * Description: An in-memory slot ledger and item scheduler for the engine's tests.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

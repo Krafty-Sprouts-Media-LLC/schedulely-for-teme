@@ -5,6 +5,7 @@
  * Description: What the scheduler may ask about items that are already scheduled.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

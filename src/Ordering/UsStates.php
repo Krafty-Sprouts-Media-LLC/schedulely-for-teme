@@ -5,6 +5,7 @@
  * Description: The US states, grouped by the timezone Schedulely treats each as in.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

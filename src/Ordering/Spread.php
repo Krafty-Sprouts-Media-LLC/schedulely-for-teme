@@ -5,6 +5,7 @@
  * Description: How PHP ordering spaces the posts of a series apart.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

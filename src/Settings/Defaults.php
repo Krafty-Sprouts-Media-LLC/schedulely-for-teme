@@ -5,6 +5,7 @@
  * Description: Every setting's default, in one place.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

@@ -5,6 +5,7 @@
  * Description: Starts a run when the "Run now" setting is saved on.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

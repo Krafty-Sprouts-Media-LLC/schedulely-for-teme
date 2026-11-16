@@ -5,6 +5,7 @@
  * Description: A SecretReader that answers one dummy value, for tests.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

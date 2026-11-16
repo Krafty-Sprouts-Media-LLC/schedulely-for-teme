@@ -5,6 +5,7 @@
  * Description: The one door the scheduler writes through.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 
@@ -24,6 +25,7 @@ interface ItemScheduler
 {
     /**
      * @param  string  $actingPerson  the account the write is made for
+     *
      * @return string|null null when the item was scheduled, otherwise one plain sentence saying why not
      *
      * @since 0.1.0

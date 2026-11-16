@@ -6,6 +6,7 @@
  *              toggle, and the two job handlers Teme calls.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

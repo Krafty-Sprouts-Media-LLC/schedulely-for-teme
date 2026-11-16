@@ -5,6 +5,7 @@
  * Description: A fresh in-memory SQLite database with the plugin's real migration run.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

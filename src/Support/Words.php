@@ -6,6 +6,7 @@
  *              another language can translate it.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

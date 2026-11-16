@@ -5,6 +5,7 @@
  * Description: Decides how the queue is ordered before times are given out.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

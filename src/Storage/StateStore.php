@@ -5,6 +5,7 @@
  * Description: Small named values the plugin remembers between requests.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

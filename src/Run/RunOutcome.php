@@ -5,6 +5,7 @@
  * Description: What a run came to, including the queue counts WordPress's email carried.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

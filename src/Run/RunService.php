@@ -6,6 +6,7 @@
  *              drives the engine and records what happened.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 
@@ -16,6 +17,7 @@ namespace KraftySprouts\Schedulely\Run;
 use Closure;
 use Illuminate\Database\ConnectionInterface;
 use KraftySprouts\Schedulely\Engine\ActingPeople;
+use KraftySprouts\Schedulely\Engine\RunReport;
 use KraftySprouts\Schedulely\Engine\RunSettings;
 use KraftySprouts\Schedulely\Engine\Scheduler;
 use KraftySprouts\Schedulely\Engine\SlotPlanner;
@@ -24,6 +26,7 @@ use KraftySprouts\Schedulely\Ordering\OrderingMethod;
 use KraftySprouts\Schedulely\Ordering\PhpOrderer;
 use KraftySprouts\Schedulely\Ordering\QueueOrderer;
 use KraftySprouts\Schedulely\Ordering\UsTimezones;
+use KraftySprouts\Schedulely\Queue\QueueItem;
 use KraftySprouts\Schedulely\Settings\Defaults;
 use KraftySprouts\Schedulely\Settings\Options;
 use KraftySprouts\Schedulely\Storage\QueueStore;
@@ -130,7 +133,8 @@ final readonly class RunService
     }
 
     /**
-     * @param  list<\KraftySprouts\Schedulely\Queue\QueueItem>  $items
+     * @param  list<QueueItem>  $items
+     *
      * @return array<string, string>
      */
     private function groups(array $items): array
@@ -144,7 +148,7 @@ final readonly class RunService
         return $groups;
     }
 
-    private function remember(\KraftySprouts\Schedulely\Engine\RunReport $report, int $now, bool $manual, string $method): void
+    private function remember(RunReport $report, int $now, bool $manual, string $method): void
     {
         $state = new StateStore($this->db);
         $state->put('last_run', $now);

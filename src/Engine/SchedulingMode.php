@@ -5,6 +5,7 @@
  * Description: The three ways Schedulely places items inside a day's window.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

@@ -6,6 +6,7 @@
  *              publishing window that falls in each group's waking hours.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

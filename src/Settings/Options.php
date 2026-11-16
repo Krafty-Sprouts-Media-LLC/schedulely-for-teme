@@ -5,6 +5,7 @@
  * Description: Schedulely's settings, read and checked once into one value object.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 
@@ -12,6 +13,7 @@ declare(strict_types=1);
 
 namespace KraftySprouts\Schedulely\Settings;
 
+use DateTimeZone;
 use KraftySprouts\Schedulely\Engine\SchedulingMode;
 use KraftySprouts\Schedulely\Ordering\AiProvider;
 use KraftySprouts\Schedulely\Ordering\OrderingMethod;
@@ -133,6 +135,7 @@ final readonly class Options
 
     /**
      * @param  list<string>  $fallback
+     *
      * @return list<string>
      */
     private static function words(string $text, array $fallback, bool $lower = false): array
@@ -177,7 +180,7 @@ final readonly class Options
         }
 
         try {
-            new \DateTimeZone($name);
+            new DateTimeZone($name);
         } catch (Throwable) {
             return 'UTC';
         }

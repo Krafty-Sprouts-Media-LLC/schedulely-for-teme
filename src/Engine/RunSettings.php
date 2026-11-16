@@ -5,6 +5,7 @@
  * Description: The settings one scheduling run reads.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

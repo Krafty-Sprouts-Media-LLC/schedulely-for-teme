@@ -7,10 +7,12 @@
  *              namespaces. Set SCHEDULELY_TEME_DEV to point at another Teme copy.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 
 declare(strict_types=1);
+use Composer\Autoload\ClassLoader;
 
 $temeDev = getenv('SCHEDULELY_TEME_DEV') ?: dirname(__DIR__, 2).'/teme-dev';
 $autoload = $temeDev.'/vendor/autoload.php';
@@ -20,7 +22,7 @@ if (! is_file($autoload)) {
     exit(1);
 }
 
-/** @var Composer\Autoload\ClassLoader $loader */
+/** @var ClassLoader $loader */
 $loader = require $autoload;
 $loader->addPsr4('KraftySprouts\\Schedulely\\', dirname(__DIR__).'/src/');
 $loader->addPsr4('KraftySprouts\\Schedulely\\Tests\\', __DIR__.'/');

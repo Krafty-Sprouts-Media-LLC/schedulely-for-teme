@@ -5,6 +5,7 @@
  * Description: The table of drafts waiting to be scheduled.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 
@@ -50,6 +51,7 @@ final readonly class QueueStore
     /**
      * @param  list<string>  $types
      * @param  list<string>  $statuses
+     *
      * @return list<QueueItem>
      *
      * @since 0.1.0

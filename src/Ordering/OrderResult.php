@@ -5,6 +5,7 @@
  * Description: The queue after ordering, and how it was ordered.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

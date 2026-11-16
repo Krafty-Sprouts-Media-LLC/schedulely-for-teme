@@ -5,6 +5,7 @@
  * Description: A JobContext that records progress and can stop a run.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

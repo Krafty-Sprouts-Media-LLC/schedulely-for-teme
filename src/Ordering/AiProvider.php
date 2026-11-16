@@ -5,6 +5,7 @@
  * Description: The OpenAI-compatible services AI ordering can call.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

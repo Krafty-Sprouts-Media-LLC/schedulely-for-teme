@@ -6,6 +6,7 @@
  *              (target US state removed) and spreading each series evenly.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

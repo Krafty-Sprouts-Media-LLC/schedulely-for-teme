@@ -6,6 +6,7 @@
  *              a day, and suggests changes when the daily quota does not fit.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

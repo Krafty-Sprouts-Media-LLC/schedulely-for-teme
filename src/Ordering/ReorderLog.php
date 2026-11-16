@@ -5,6 +5,7 @@
  * Description: Where ordering attempts are recorded.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

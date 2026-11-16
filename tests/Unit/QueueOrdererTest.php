@@ -7,6 +7,7 @@
  *              and never reorder on an automatic run.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

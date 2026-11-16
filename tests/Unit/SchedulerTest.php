@@ -7,6 +7,7 @@
  *              and stops when told to.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

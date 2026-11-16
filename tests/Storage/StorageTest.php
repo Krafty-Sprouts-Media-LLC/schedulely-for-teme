@@ -6,6 +6,7 @@
  *              run against in-memory SQLite through the real migration file.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

@@ -6,6 +6,7 @@
  *              first, gives each queued item a time and rolls to the next active day.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 
@@ -251,6 +252,7 @@ final readonly class Scheduler
 
     /**
      * @param  array<string, string>|null  $groups
+     *
      * @return array{0: int, 1: int}|null
      */
     private function band(?array $groups, QueueItem $item, string $date): ?array
@@ -276,6 +278,7 @@ final readonly class Scheduler
 
     /**
      * @param  list<int>  $used
+     *
      * @return int|null the time the item was scheduled for, or null when every retry failed
      */
     private function retry(QueueItem $item, string $date, array $used, int $now, string $person): ?int

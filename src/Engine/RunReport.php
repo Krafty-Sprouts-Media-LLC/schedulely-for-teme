@@ -5,6 +5,7 @@
  * Description: What a scheduling run did.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

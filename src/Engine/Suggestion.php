@@ -5,6 +5,7 @@
  * Description: One suggested fix when the daily quota does not fit the window.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

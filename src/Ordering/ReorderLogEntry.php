@@ -5,6 +5,7 @@
  * Description: One row of the reorder log.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 

@@ -6,6 +6,7 @@
  *              window, including overnight windows and daylight-saving changes.
  *
  * @package KraftySprouts\Schedulely
+ *
  * @since   0.1.0
  */
 
