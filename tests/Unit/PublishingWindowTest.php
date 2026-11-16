@@ -2,8 +2,6 @@
 /**
  * Filename: PublishingWindowTest.php
  * Author: Krafty Sprouts Media, LLC
- * Created: 16/11/2026
- * Last Modified: 16/11/2026
  * Description: Time-of-day parsing, the site calendar and the daily publishing
  *              window, including overnight windows and daylight-saving changes.
  *

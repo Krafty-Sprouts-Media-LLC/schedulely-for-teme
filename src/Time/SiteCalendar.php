@@ -2,8 +2,6 @@
 /**
  * Filename: SiteCalendar.php
  * Author: Krafty Sprouts Media, LLC
- * Created: 16/11/2026
- * Last Modified: 16/11/2026
  * Description: Calendar maths in the site's timezone: local date and time to
  *              timestamp, calendar days that survive daylight saving, weekdays.
  *

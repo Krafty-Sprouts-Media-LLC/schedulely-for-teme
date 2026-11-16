@@ -2,8 +2,6 @@
 /**
  * Filename: TimeOfDay.php
  * Author: Krafty Sprouts Media, LLC
- * Created: 16/11/2026
- * Last Modified: 16/11/2026
  * Description: A clock time without a date, parsed from the 12 hour or 24 hour
  *              text people type into the window settings.
  *

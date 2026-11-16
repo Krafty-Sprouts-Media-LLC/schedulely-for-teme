@@ -2,8 +2,6 @@
 /**
  * Filename: PublishingWindow.php
  * Author: Krafty Sprouts Media, LLC
- * Created: 16/11/2026
- * Last Modified: 16/11/2026
  * Description: The daily publishing window, same-day or overnight, anchored on
  *              the day it opens.
  *

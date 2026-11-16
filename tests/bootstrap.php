@@ -2,8 +2,6 @@
 /**
  * Filename: bootstrap.php
  * Author: Krafty Sprouts Media, LLC
- * Created: 16/11/2026
- * Last Modified: 16/11/2026
  * Description: Loads the development site's Composer autoloader (Pest, Illuminate
  *              and teme/contracts live there) and adds this package's own
  *              namespaces. Set SCHEDULELY_TEME_DEV to point at another Teme copy.

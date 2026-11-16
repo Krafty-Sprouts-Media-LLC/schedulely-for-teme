@@ -12,7 +12,7 @@ Made without asking, each with why. Newest at the end.
 
 **D5. Plugin identity.** Composer name and manifest `name`: `krafty-sprouts/schedulely`; `code`: `schedulely`; `author`: `Krafty Sprouts Media, LLC`; PHP namespace `KraftySprouts\Schedulely`; settings group `plugin.schedulely`; tables `schedulely_*`; the license stays GPL-2.0-or-later like the WordPress plugin.
 
-**D6. Headers and `@since`.** Every PHP file starts with a file-header docblock (filename, author, created, description, package, since) and every class, interface, public method and constant has `@since 0.1.0`, as the project owner asked. The handbook only recommends `@since` for packages with their own API, so this goes beyond it. The `@since` in this package is this package's own version (0.1.0 is the first Teme release; the WordPress plugin's 1.8.15 history is not carried over).
+**D6. Headers and `@since`.** Every PHP file starts with a file-header docblock (filename, author, description, package, since; the project owner later dropped the Created and Last Modified lines as unnecessary, so they are not used) and every class, interface, public method and constant has `@since 0.1.0`, as the project owner asked. The handbook only recommends `@since` for packages with their own API, so this goes beyond it. The `@since` in this package is this package's own version (0.1.0 is the first Teme release; the WordPress plugin's 1.8.15 history is not carried over).
 
 **D7. `declare(strict_types=1)` and one-to-three-sentence class docblocks** everywhere, as the handbook recommends. Pint and PHPStan are used where they run (see REPORT.md).
 
