@@ -15,45 +15,15 @@ declare(strict_types=1);
 use KraftySprouts\Schedulely\Ordering\AiOrderer;
 use KraftySprouts\Schedulely\Ordering\AiProvider;
 use KraftySprouts\Schedulely\Queue\QueueItem;
+use KraftySprouts\Schedulely\Tests\Support\FakeHttp;
 use Teme\Contracts\Http\AnswerTooLarge;
 use Teme\Contracts\Http\HostRefused;
 use Teme\Contracts\Http\HttpAnswer;
-use Teme\Contracts\Http\OutboundHttp;
 use Teme\Contracts\Http\RequestFailed;
-
-/**
- * A scripted OutboundHttp: answers with what it was given and remembers each call.
- */
-final class FakeHttp implements OutboundHttp
-{
-    /** @var list<array{url: string, json: array<string, mixed>, headers: array<string, string>, timeout: int}> */
-    public array $posts = [];
-
-    public function __construct(private HttpAnswer|Throwable $reply) {}
-
-    public function get(string $url, array $headers = [], int $timeoutSeconds = 5): HttpAnswer
-    {
-        throw new LogicException('Schedulely never GETs.');
-    }
-
-    public function postJson(string $url, array $json, array $headers = [], int $timeoutSeconds = 5): HttpAnswer
-    {
-        $this->posts[] = ['url' => $url, 'json' => $json, 'headers' => $headers, 'timeout' => $timeoutSeconds];
-
-        if ($this->reply instanceof Throwable) {
-            throw $this->reply;
-        }
-
-        return $this->reply;
-    }
-}
 
 function chatAnswer(string $content, int $status = 200, int $tokens = 120): HttpAnswer
 {
-    return new HttpAnswer($status, (string) json_encode([
-        'choices' => [['message' => ['content' => $content]]],
-        'usage' => ['total_tokens' => $tokens],
-    ]), []);
+    return FakeHttp::chat($content, $status, $tokens);
 }
 
 function aiItems(): array

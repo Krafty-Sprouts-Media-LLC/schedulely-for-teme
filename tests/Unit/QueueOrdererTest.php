@@ -21,6 +21,7 @@ use KraftySprouts\Schedulely\Ordering\ReorderLog;
 use KraftySprouts\Schedulely\Ordering\ReorderLogEntry;
 use KraftySprouts\Schedulely\Ordering\Spread;
 use KraftySprouts\Schedulely\Queue\QueueItem;
+use KraftySprouts\Schedulely\Tests\Support\FakeHttp;
 use Random\Engine\Mt19937;
 use Random\Randomizer;
 use Teme\Contracts\Http\HttpAnswer;
@@ -103,7 +104,7 @@ it('does not reorder an automatic run, which still shuffles when shuffling is on
 });
 
 it('uses the AI order when AI succeeds', function (): void {
-    $http = new FakeHttp(chatAnswer('{"ordered_ids":[6,5,4,3,2,1]}', tokens: 99));
+    $http = new FakeHttp(FakeHttp::chat('{"ordered_ids":[6,5,4,3,2,1]}', tokens: 99));
     $ai = new AiOrderer($http, AiProvider::Deepseek, 'deepseek-v4-flash', 'dummy-key-not-real', 150);
     $log = new MemoryLog;
     $result = queueOrderer(true, OrderingMethod::Ai, true, $log, $ai)->order(seriesQueue(), true);
