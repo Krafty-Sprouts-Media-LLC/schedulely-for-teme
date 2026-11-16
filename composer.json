@@ -1,0 +1,15 @@
+{
+    "name": "krafty-sprouts/schedulely",
+    "type": "teme-plugin",
+    "description": "Schedulely for Teme: spread queued drafts across future publishing windows.",
+    "license": "GPL-2.0-or-later",
+    "require": {
+        "php": "^8.4",
+        "teme/contracts": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "KraftySprouts\\Schedulely\\": "src/"
+        }
+    }
+}

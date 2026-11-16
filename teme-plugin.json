@@ -1,0 +1,17 @@
+{
+    "manifest": 1,
+    "name": "krafty-sprouts/schedulely",
+    "code": "schedulely",
+    "label": "Schedulely",
+    "description": "Spreads queued drafts across future publishing windows, with quotas, minimum intervals, weekdays and optional queue ordering.",
+    "version": "0.1.0",
+    "requires": {
+        "teme": "^0.8 || ^0.9"
+    },
+    "plugin": "KraftySprouts\\Schedulely\\SchedulelyPlugin",
+    "author": "Krafty Sprouts Media, LLC",
+    "license": "GPL-2.0-or-later",
+    "capabilities": ["content.read", "content.write", "jobs"],
+    "owns": { "tables": ["schedulely_probe"] },
+    "hooks": ["ContentSaved"]
+}
