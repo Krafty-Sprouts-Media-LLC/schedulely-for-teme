@@ -12,6 +12,8 @@
     "author": "Krafty Sprouts Media, LLC",
     "license": "GPL-2.0-or-later",
     "capabilities": ["content.read", "content.write", "jobs"],
-    "owns": { "tables": ["schedulely_probe"] },
+    "owns": {
+        "tables": ["schedulely_queue", "schedulely_slots", "schedulely_state", "schedulely_reorder_log"]
+    },
     "hooks": ["ContentSaved"]
 }
