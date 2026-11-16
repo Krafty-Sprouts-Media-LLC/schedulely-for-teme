@@ -38,7 +38,7 @@ added at the end.
 ### H7. `php artisan teme:plugins:enable` on an updated manifest
 - **Found**: changing a manifest to ask for more access leaves the plugin in `Needs attention` ("Update 0.1.0 is blocked: it asks for more access than you agreed to.") until `teme:plugins:enable --agree` is run again. The Rules page says this in one sentence ("one that asks for more waits until someone agrees again"); it does not say how, and a plugin whose version string did not change is easy to take for a bug.
 
-### H8. `list` of Notices doors is previewed but not offered
+### H8. The Notices contracts look like a plugin socket and are not one
 - **Expected**: `teme/contracts` has `Notices`, `NoticeRegistrar`, `NoticeKind` and `NoticeMessage`, documented as "Where kinds of notice are declared" and "Sends a notice of a declared kind". A plugin author would take them as a plugin socket.
 - **Found**: asking for `Notices` or `NoticeRegistrar` in a plugin constructor is refused at enable: "asks for Teme\Contracts\Notices\Notices; a plugin may ask only for what Teme offers plugins." They are for core code only (the docblock says "A preview until Teme 1.0"). See W3.
 
@@ -87,3 +87,37 @@ added at the end.
 ### W11. A plugin's HTTP call is limited to 10 seconds and 1 MB
 - **Expected**: WordPress waits up to an hour for the AI to order a queue of up to 1,500 posts (a reorder of a few hundred takes minutes on a reasoning-capable model).
 - **Did instead**: AI ordering sends at most 150 items in one request (a setting), numbered `1…n` with a slug each instead of ULIDs to keep the prompt short, and a larger queue is ordered in PHP with a log row saying why. Chunking the queue would lose the global spacing, so it is not done. `OutboundHttp::postJson()` also gives no way to ask for a longer wait, so a slow model can still time out; the fallback to PHP ordering covers that.
+
+### W12. A plugin cannot read when an item is scheduled for
+- **Expected**: a way to ask "when is this item due to publish?", or a `publishAt` on `ItemRef`. Schedulely's deficit rule ("is the furthest day short of its quota?") needs the times of every scheduled item.
+- **Did instead**: the ledger table is filled from `ContentScheduled` (which carries `publishAt`) and emptied by the publish, unpublish, trash and delete hooks. It misses everything scheduled before the plugin was enabled, items scheduled by an import, and an item restored from the trash while scheduled (`ContentRestored` carries no time). On a site that already has scheduled items, the first run can therefore start on a day that is already fuller than the plugin believes, and the real count per day will exceed the quota until those items publish.
+
+## More handbook gaps
+
+### H9. There is no way to put test content on a development site
+- **Expected**: the development-site page ends at "enable your plugin"; a plugin that reacts to content needs content. A command, a factory, a seeder or a documented way to make drafts.
+- **Found**: the console has no command that creates an item (`teme:media:add`, `teme:people:add`, `teme:user:create` exist; `teme:bench:seed` fills a separate benchmark database). The management API can create drafts but needs a key made by an administrator in the admin, which needs a signed-in session. Teme's own application code is off limits to an outside developer, and was not read.
+- **Did instead**: everything that does not need a real item was run for real on the dev site (manifest check, constructor doors, tables and migration, enable, remove-data, `teme:doctor`). The hook-to-queue path and `ContentWriter::schedule()` were tested against fakes of the contracts only. **The scheduling run has not been seen creating a real scheduled item.** REPORT.md says so.
+
+### H10. How a plugin reaches its own tables is not written down
+- **Expected**: a sentence next to "Tables carry the plugin's code" saying how code reads and writes them. The rules say a constructor may ask only for what Teme offers (`SettingsReader`, `SecretReader`, `OutboundHttp`, and the doors capabilities open); a database connection is not among them.
+- **Did instead**: `Illuminate\Support\Facades\DB::connection()`, called when a hook or job runs, never in the constructor. Teme's enable-time scan accepted it, so it works, but "never reaches for the container" (Rules page) reads as if a facade might be refused. Whether this is the intended way is unknown.
+
+### H11. Where a plugin's translations go, and what they are keyed by
+- **Expected**: "Keep the translations in the package's own `lang` folder, as themes do" (Rules) with a page saying how Teme finds them (a `lang` folder at the package root? JSON keyed by the English sentence? `:name` placeholders?). The only page cited is for themes.
+- **Did instead**: every sentence goes through a small `Words::say()` that calls `__()` with the English sentence as the key and `:name` placeholders, falling back to plain English when no translator is running. No `lang` folder is shipped because nothing says what Teme would read from it.
+
+### H12. The value a `multiselect` setting gives back
+- **Expected**: the Settings page says `stringList()` answers `list<string>`, and a `multiselect` `default` is "any JSON value". Not said: whether the saved value is the option keys as strings, whether a day option keyed `"0"` survives as `"0"`, and what an empty selection returns.
+- **Did instead**: the weekday setting uses string keys `"0"` to `"6"` and `Options` accepts strings or integers, ignores everything out of range, and treats an empty answer as "every day". Not seen on a live site (H9: no signed-in session to save a setting).
+
+### H13. What `ContentWriter::schedule()` means is only in the interface's one-line docblock
+- **Expected**: the (stub) content-write page: whose name the revision carries, what happens to an item in `review`, whether the item's status is `scheduled` afterwards, what a `WriteRefused` can say, and whether `ContentScheduled` has fired by the time the call returns.
+- **Did instead**: assumed hooks fire after commit as the Hooks page says, so a write is followed at once by the plugin's own ledger update (`WriterItemScheduler`); the hook later writes the same row again, which is harmless. Everything else is untested against Teme.
+
+### H14. Jobs and schedules: who runs them, and where progress shows
+- **Expected**: a Jobs page (it is a stub, H3) saying the schedule is driven by `php artisan teme:plugins:run-due-schedules`, that a queue worker must be running, and where a job's `progress()` message is shown.
+- **Found**: `teme:doctor` says "The scheduler hasn't run on this site yet… Start the scheduler role, which runs `php artisan schedule:work`" and that a worker finished a job an hour ago. The finest schedule a manifest can ask for is `minute`; Schedulely uses `hour` and decides the rest itself (W10). Progress was assumed to show on Tools › Jobs from the 0.8.0 changelog; not seen.
+
+### H15. `php artisan teme:plugins:enable` re-reads the manifest every time
+- **Found** while iterating: after each change to `teme-plugin.json` the plugin shows `Needs attention` or `Can't be used` until it is enabled again, and the `Why` column is the only place that says why (it names the missing import in a constructor, for one). That column is good; the Testing page could say to read it.

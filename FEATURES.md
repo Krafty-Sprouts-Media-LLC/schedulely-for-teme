@@ -65,7 +65,7 @@ Classifications were made from the handbook, the generated references and
 |---|---|---|---|
 | 4.1 | Auto-schedule on/off | **same** | A `boolean` setting. Off by default. |
 | 4.2 | WP-Cron `twicedaily` | **different** | A `schedules` entry (`hour`, the finest that makes sense for a gate) with the handler skipping unless the chosen interval (setting, default 12 h) has passed. Schedules are fixed in the manifest, so the on/off and the interval live in the handler. |
-| 4.3 | Cron failure caught, error email sent | **different** | Caught, recorded, and a notice sent if Teme hands plugins `Notices` (checked in step 6). |
+| 4.3 | Cron failure caught, error email sent | **different** | An exception in a run is caught by Teme's job runner (a failed job shows on the Jobs screen). The email cannot be sent: Teme does not hand plugins `Notices` (**proved on the dev site**: asking for it in the constructor is refused at enable). The plugin raises a `StatusCheck` warning for the failed items for 24 hours instead. |
 | 4.4 | "Run Schedule Now" button | **different** | No button socket. A `run_now` toggle setting: saving it on queues the run (`SettingsChanged`). |
 | 4.5 | `wp cron event run schedulely_auto_schedule` | **different** | `php artisan teme:plugins:run-due-schedules`. |
 | 4.6 | Last-run timestamp | **same** | Stored in the plugin's own state table. Not displayable on a screen (see 7.1). |
@@ -74,10 +74,11 @@ Classifications were made from the handbook, the generated references and
 
 | # | WordPress feature | Mark | Notes |
 |---|---|---|---|
-| 5.1 | HTML email after a run with counts, windows, upcoming list | **different** | If `Notices` is available: a notice kind `schedulely.run` with plain-words lines (Teme adds the layout). |
-| 5.2 | Recipients chosen from users with `publish_posts` | **can't yet** | No accounts socket. Core decides who gets a kind by its `audience` ability and each person's choice. |
-| 5.3 | AI-written summary paragraph | **can't yet** | See 2.6. |
-| 5.4 | Error email | **different** | See 4.3. |
+| 5.1 | HTML email after a run with counts, windows, upcoming list | **can't yet** (replaced) | No mail door and `Notices` is not offered to plugins. In its place: an info notice on every admin page for 24 hours after a run ("last run scheduled 7 of 9 items, windows … to …"), and a warning when items failed, with the first error. The upcoming-posts list, per-window counts and the HTML layout are lost. |
+| 5.2 | Recipients chosen from users with `publish_posts` | **can't yet** | No accounts socket and no way to address a notice. Status notices go to whoever opens the admin. |
+| 5.3 | AI-written summary paragraph | **can't yet** | No mail, and no AI contract (2.6). |
+| 5.4 | Error email | **can't yet** (replaced) | See 4.3 and 5.1. |
+| 5.5 | Capacity pill / "queue is empty" / pool-overflow messages on the settings page | **different** | The same facts as `StatusCheck` notices, only when there is something to say (capacity short, auto on with no account, AI chosen with no key, timezone mode in the wrong scheduling mode, queue empty on a site that has never run, items held back by the pool size). |
 
 ## 6. Settings and surfaces
 
@@ -90,7 +91,9 @@ Classifications were made from the handbook, the generated references and
 | 6.5 | Tools → Schedulely menu entry and a Settings link on the plugin row | **same** | `contributes.admin` with `surface: tools`, `to: settings`. |
 | 6.6 | Welcome notice, dismissed per user | **different** | Not built. A `StatusNotice` cannot be dismissed per person. |
 | 6.7 | Defaults written on activation, version upgrade migrations | **different** | Defaults are declared in the manifest. Plugin tables come from migrations. |
-| 6.8 | Uninstall removes everything | **different** | `php artisan teme:plugins:remove-data` drops the plugin's tables. |
+| 6.8 | Uninstall removes everything | **different** | `php artisan teme:plugins:remove-data krafty-sprouts/schedulely` drops the plugin's four tables once it is disabled (**proved on the dev site**). Saved settings stay, as Teme keeps them for when the plugin returns. |
+| 6.9 | "Needs an account" | **different** | New in Teme: every write names the person it acts for (see 3.3). |
+| 6.10 | Multisite / Polylang / cache plugins | **same** (not needed) | Each language version is its own item; Teme purges its caches itself. |
 
 ## 7. Developer surface
 

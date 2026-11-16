@@ -30,4 +30,22 @@ Made without asking, each with why. Newest at the end.
 
 **D14. The "Run now" trigger is a toggle** (`run_now`), run when its saved value is on (FINDINGS W4). The plugin cannot reset its own setting, so the person turns it off and on to run again; documented in the setting's description.
 
-**D15. Auto-schedule runs hourly and gates in the handler** (W10). The WordPress twice-daily rhythm is the default interval (12 hours); the person can pick 1, 6, 12 or 24.
+**D15. Auto-schedule runs hourly and gates in the handler** (W10). The WordPress twice-daily rhythm is the default interval (12 hours); the person can pick 1, 6, 12 or 24. A tick that comes up to five minutes early still counts as due, so a 12 hour interval does not drift to 13.
+
+**D16. The queue tracks every content type and both waiting statuses**, not only the ones currently chosen, so changing "Content types to schedule" or "Status to schedule from" later finds items that were already seen. Only an item's current status and type decide whether a run takes it.
+
+**D17. A manual run is a background job, not a request.** It reports progress every "progress batch size" items (setting, default 75, as WordPress's batch size), and cancelling it (JobStopped) leaves what was scheduled in place and the rest queued. A retry after a crash simply continues, because scheduled items have left the queue.
+
+**D18. Scheduled items are written one `ContentWriter::schedule()` call each,** and the plugin writes its own ledger row straight after, rather than waiting for `ContentScheduled`, so the rest of the same run counts the item. The hook later writes the same row again (an upsert), which is harmless.
+
+**D19. AI ordering sends numbers, not IDs.** Teme's item IDs are 26-character ULIDs; numbering the lines 1…n keeps the prompt short and makes "no invented IDs" a range check. At most `ai_max_items` (default 150) per request because a plugin's call may take ten seconds (FINDINGS W11).
+
+**D20. No notification email.** Teme offers none to a plugin (FINDINGS W3, H8). The status notices stand in; they are quiet unless there is something to say (an always-on "everything is fine" notice would be noise on every admin page).
+
+**D21. The author feature is a rotation of the acting person** (FINDINGS W2), not author assignment. It is off by default, and its setting says plainly that Teme does not document whether it changes the author. Preserved authors are not built.
+
+**D22. Formatting.** `pint.json` is Teme's own Pint configuration with two rules turned off, `phpdoc_no_package` and `blank_line_after_opening_tag`, because they would strip the file header the project owner asked for. PHPStan runs at level 6 with no errors. Both run with the development site's binaries.
+
+**D23. The live check is limited to what the public console can do** (FINDINGS H9). A permission check refused reading Teme's own application folder when I looked for a way to create content; the brief limits sources to the handbook, references and contracts, so that stands, and no workaround was tried.
+
+**D24. The plugin is left enabled on the development site** with its tables, as the other two plugins are. Disabling it and `teme:plugins:remove-data` undo it fully.
