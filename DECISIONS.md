@@ -48,4 +48,6 @@ Made without asking, each with why. Newest at the end.
 
 **D23. The live check is limited to what the public console can do** (FINDINGS H9). A permission check refused reading Teme's own application folder when I looked for a way to create content; the brief limits sources to the handbook, references and contracts, so that stands, and no workaround was tried.
 
+**D25 (22 November). Docs updated, code not ported to the new sockets.** Teme's `main` moved to 1.0.0 while this work sat, and its handbook now documents most of what the port had to work around. The request was to update the docs, record where I stopped, and push, so that is what was done: the test fakes were repaired for the new contract methods (the suite broke on `OutboundHttp::postForm`, `ContentWriter::linkTranslations`, `JobContext::personId()` and `QueueOptions`; 228 tests pass again), the notes say what the new handbook claims, and the redesign is listed as the next round instead of being started unasked. The code still runs on the old workarounds and enables on the dev site.
+
 **D24. The plugin is left enabled on the development site** with its tables, as the other two plugins are. Disabling it and `teme:plugins:remove-data` undo it fully.

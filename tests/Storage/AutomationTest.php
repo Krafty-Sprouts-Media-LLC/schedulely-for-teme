@@ -21,6 +21,7 @@ use KraftySprouts\Schedulely\Tests\Support\FakeContext;
 use KraftySprouts\Schedulely\Tests\Support\FakeJobs;
 use KraftySprouts\Schedulely\Tests\Support\Harness;
 use Teme\Contracts\Jobs\JobStopped;
+use Teme\Contracts\Jobs\QueueOptions;
 use Teme\Contracts\Settings\SettingsChanged;
 
 function autoRunner(Harness $h): AutoRunner
@@ -105,7 +106,7 @@ it('does not blow up when Teme refuses to queue the job', function (): void {
     $h = Harness::make(['run_now' => true]);
     $jobs = new class extends FakeJobs
     {
-        public function queue(string $key, array $payload = [], ?string $label = null): string
+        public function queue(string $key, array $payload = [], ?string $label = null, ?QueueOptions $options = null): string
         {
             throw new InvalidArgumentException('Only a person or the operator queues a plugin job.');
         }

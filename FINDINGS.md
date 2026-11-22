@@ -9,7 +9,31 @@ Kept while building. Two kinds of entry:
 Each entry: **Expected**, then **Did instead**. Numbers are stable; new ones are
 added at the end.
 
-## Handbook gaps
+## Update, 22 November 2026: Teme `main` has moved on
+
+Everything below was written against Teme `main` as it stood on 16 November (version 0.8.0-alpha.1, contracts `@since 0.9.0`). By 22 November `main` has become the 1.0.0 line (`Prepare 1.0.0`, round 3 of the plugin sockets): the handbook now has pages for most of what was missing, and the contracts grew (`OutboundHttp::postForm`, `ContentWriter::linkTranslations`, `JobContext::personId()`, `Jobs::queue(…, QueueOptions)`). Only the handbook, references and contracts were read for this update. **Nothing in the list below has been tried in code**; it is what the pages now say, so each row is a claim to test in the next round (REPORT.md, "Next").
+
+| Entry here | What the 22 November handbook says |
+|---|---|
+| H1, H10 (tables) | `plugins/tables.md` now exists. |
+| H3, H14 (jobs, schedules, progress) | `plugins/jobs.md` is written: a schedule is due at the scheduler's first pass after enabling and then each time its interval has passed since it was last queued; `teme:plugins:schedules` lists them; progress shows in Tools › Jobs. |
+| **H16, H17 (queue refused, schedule never due)** | **Explained.** Scheduled work runs as the administrator who enabled the plugin. A plugin with schedules enabled from the console without `--as=<administrator's email>` has schedules that don't run, and `teme:plugins` says so on its row (it does now: "Its schedules don't run: it was enabled from the command line without naming an administrator"). That is exactly how Schedulely and the seeder were enabled. `Jobs::queue()` runs a job as a person or as the operator, and an operator run has no person (`JobContext::personId()` throws). |
+| H5 (no test harness) | `testing.md` now describes a testing kit with `runJob()` and `runSchedules()` against a real site. |
+| H7, H15 | `teme:plugins:enable` takes `--as`. |
+| W1, W12 (no read/list of content or scheduled times) | `ContentReader::queue()` lists the unpublished items the acting person may edit, oldest first, with `scheduledFor`, **including items that existed before the plugin was enabled**. `published()` lists public items. `draft()` reads one. |
+| W2 (authors, accounts) | `PeopleReader::writers()` (capability `people.read`), a `person` setting type, and `credits` on `NewItem` and `ItemChanges`. |
+| W3, H8 (no notices) | `plugins/notices.md`, capability `notices.send`. |
+| W4 (no button or screen) | `contributes.actions` puts up to three buttons on the settings page that queue a declared job; `plugins/admin-area.md` adds screens, overview figures and record tables. |
+| W5 (dynamic options) | `person`, `term` and `type` setting types. |
+| W6 (fixed hosts) | `hostsFrom` lets a `url` setting name the host the plugin may reach. |
+| W7 (no AI contract) | `plugins/ai.md`: `SiteAi` and `contributes.aiTasks`. |
+| W9 (acting person) | `JobContext::personId()`: the person who queued the job, or for a schedule the administrator who enabled the plugin. "Don't keep a 'write as' setting of your own." |
+| W10 (schedule on/off and interval) | `enabledBy` (a boolean setting) and `everyFrom` (a select setting) on a schedule. |
+| W11 (10 second calls) | A job declared `long` may run 30 minutes and each outbound call 300 seconds. |
+| W8 (no plugin hooks, no API) | `plugins/your-own-hooks.md` covers hooks for other plugins; whether anything exposes a plugin's actions to the management API or agents is not stated. |
+| H2 (version) | Still open and worse: the dev site's `.env` still says `TEME_VERSION=0.8.0-alpha.1` while the contracts it loads are the 1.0.0 ones. |
+
+## Handbook gaps (as found on 16 November)
 
 ### H1. Plugin migrations are not in the handbook
 - **Expected**: a page saying where a plugin's migrations live, what they look like, and when they run. The Rules page says a plugin's migrations may only create tables starting with its `code` and listed under `owns`, and the manifest reference lists `owns.tables`, but nothing says how to ship a migration.

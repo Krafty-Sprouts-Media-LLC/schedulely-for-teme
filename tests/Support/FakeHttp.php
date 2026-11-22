@@ -35,6 +35,11 @@ final class FakeHttp implements OutboundHttp
         throw new LogicException('Schedulely never GETs.');
     }
 
+    public function postForm(string $url, array $fields, array $headers = [], int $timeoutSeconds = 5): HttpAnswer
+    {
+        throw new LogicException('Schedulely never posts forms.');
+    }
+
     public function postJson(string $url, array $json, array $headers = [], int $timeoutSeconds = 5): HttpAnswer
     {
         $this->posts[] = ['url' => $url, 'json' => $json, 'headers' => $headers, 'timeout' => $timeoutSeconds];

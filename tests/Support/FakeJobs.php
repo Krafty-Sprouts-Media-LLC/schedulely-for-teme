@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace KraftySprouts\Schedulely\Tests\Support;
 
 use Teme\Contracts\Jobs\Jobs;
+use Teme\Contracts\Jobs\QueueOptions;
 
 /**
  * Records every queue() call and hands back a numbered job ID.
@@ -25,7 +26,7 @@ class FakeJobs implements Jobs
     /** @var list<array{key: string, payload: array<string, mixed>, label: string|null}> */
     public array $queued = [];
 
-    public function queue(string $key, array $payload = [], ?string $label = null): string
+    public function queue(string $key, array $payload = [], ?string $label = null, ?QueueOptions $options = null): string
     {
         $this->queued[] = ['key' => $key, 'payload' => $payload, 'label' => $label];
 

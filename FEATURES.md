@@ -11,6 +11,13 @@ marked:
 Classifications were made from the handbook, the generated references and
 `teme/contracts` only. Where a later step proved one wrong, the entry says so.
 
+> **Dated 16 November 2026.** Written against Teme `main` at 0.8.0-alpha.1. By 22
+> November `main` is the 1.0.0 line, and its handbook documents sockets for most of
+> the "can't yet" and "different" rows below (a content queue reader with scheduled
+> times, people and credits, notices, settings buttons, an AI connection, `personId()`,
+> schedule switches). See the table at the top of [FINDINGS.md](FINDINGS.md). The marks
+> below are **not** updated until the port is redone against them and tested.
+
 ## 1. Scheduling engine
 
 | # | WordPress feature | Mark | Notes |

@@ -42,6 +42,11 @@ final class FakeContext implements JobContext
         return 1;
     }
 
+    public function personId(): string
+    {
+        return (string) ($this->payload['actor'] ?? 'test-person');
+    }
+
     public function progress(int $done, int $total, string $message = ''): void
     {
         if ($this->stopAfter !== null && count($this->progress) >= $this->stopAfter) {

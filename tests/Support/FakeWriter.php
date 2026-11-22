@@ -51,6 +51,11 @@ final class FakeWriter implements ContentWriter
         throw new LogicException('Schedulely never publishes items.');
     }
 
+    public function linkTranslations(array $itemIds, string $actingPersonId): void
+    {
+        throw new LogicException('Schedulely never links translations.');
+    }
+
     public function schedule(ItemRef $item, DateTimeImmutable $at, string $actingPersonId): ItemRef
     {
         if (in_array($item->id, $this->refuse, true)) {
